@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">图片编辑</string>
+
+    <string name="select_file">选择图片</string>
+    <string name="select_photo">图片选择器</string>
+
+    <string name="erase_pen">擦除笔</string>
+</resources>
