@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
+import me.minetsh.imaging.IMGEditActivity;
+
 public class MainActivity extends BaseActivity {
 
     ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -64,6 +66,10 @@ public class MainActivity extends BaseActivity {
                 // TODO: 跳转页面
                 String tempPhotoPath = tempFile.getAbsolutePath();
                 ErasePenEditorActivity.goEditor(this, tempPhotoPath);
+                // Intent intent = new Intent(this, IMGEditActivity.class);
+                // intent.putExtra(IMGEditActivity.EXTRA_IMAGE_URI, tempPhotoPath);
+                // this.startActivity(intent);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

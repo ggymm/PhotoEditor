@@ -28,6 +28,8 @@ android {
 }
 
 dependencies {
+    implementation project(':image')
+
     implementation 'androidx.appcompat:appcompat:1.4.1'
 
     implementation 'com.blankj:utilcodex:1.31.0'
