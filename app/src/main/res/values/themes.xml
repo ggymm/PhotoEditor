@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <style name="PhotoEditor" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>

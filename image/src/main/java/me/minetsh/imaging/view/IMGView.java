@@ -52,6 +52,14 @@ public class IMGView extends FrameLayout implements Runnable,
 
     private int mPointerCount = 0;
 
+    public void setImageTop(int top) {
+        this.mImage.setTop(top);
+    }
+
+    public void setImageBottom(int bottom) {
+        this.mImage.setBottom(bottom);
+    }
+
     {
         // 涂鸦画刷
         mDoodlePaint.setStyle(Paint.Style.STROKE);
@@ -110,8 +118,7 @@ public class IMGView extends FrameLayout implements Runnable,
      * 是否真正修正归位
      */
     boolean isHoming() {
-        return mHomingAnimator != null
-                && mHomingAnimator.isRunning();
+        return mHomingAnimator != null && mHomingAnimator.isRunning();
     }
 
     private void onHoming() {

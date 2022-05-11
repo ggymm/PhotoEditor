@@ -119,6 +119,17 @@ public class IMGImage {
 
     private static final int COLOR_SHADE = 0xCC000000;
 
+    private int top;
+    private int bottom;
+
+    public void setTop(int top) {
+        this.top = top;
+    }
+
+    public void setBottom(int bottom) {
+        this.bottom = bottom;
+    }
+
     static {
         DEFAULT_IMAGE = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
     }
@@ -204,7 +215,6 @@ public class IMGImage {
         }
     }
 
-    // TODO
     private void rotateStickers(float rotate) {
         M.setRotate(rotate, mClipFrame.centerX(), mClipFrame.centerY());
         for (IMGSticker sticker : mBackStickers) {
@@ -273,7 +283,6 @@ public class IMGImage {
     }
 
     public void resetClip() {
-        // TODO 就近旋转
         setTargetRotate(getRotate() - getRotate() % 360);
         mClipFrame.set(mFrame);
         mClipWin.reset(mClipFrame, getTargetRotate());
@@ -342,12 +351,6 @@ public class IMGImage {
 
                 // cFrame要是一个暂时clipFrame
                 if (mClipWin.isHoming()) {
-//
-//                    M.mapRect(cFrame, mClipFrame);
-
-//                    mClipWin
-                    // TODO 偏移中心
-
                     M.setRotate(getTargetRotate() - getRotate(), mClipFrame.centerX(), mClipFrame.centerY());
                     M.mapRect(cFrame, mClipWin.getOffsetFrame(scrollX, scrollY));
 
@@ -458,7 +461,7 @@ public class IMGImage {
         }
 
         // 预留顶部标题和底部菜单
-        mWindow.set(0, 200, width, height - 200);
+        mWindow.set(0, top, width, height - bottom);
 
         if (!isInitialHoming) {
             onInitialHoming(width, height);

@@ -20,7 +20,7 @@
         <com.hjq.bar.TitleBar
             android:id="@+id/titleBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:background="@color/title_bar_color"
             app:title="@string/app_name" />
 
@@ -30,65 +30,43 @@
             android:layout_weight="1" />
 
         <RadioGroup
-            android:id="@+id/rg_modes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/image_bg_bottom"
+            android:background="#ffffff"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="20dp">
+            android:padding="16dp">
 
-            <RadioButton
-                android:id="@+id/rb_doodle"
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/eraseMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/ic_icons8_eraser_btn"
+                android:button="@drawable/ic_icons8_erase_btn"
                 android:gravity="center"
-                android:onClick="onClick"
-                android:textColor="#FFF" />
+                android:onClick="onClick" />
 
             <Space
                 android:layout_width="@dimen/image_mode_space"
                 android:layout_height="wrap_content" />
 
-            <ImageButton
-                android:id="@+id/btn_text"
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/restoreMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:contentDescription="@string/image_text"
-                android:gravity="center"
-                android:onClick="onClick"
-                android:src="@drawable/image_btn_text"
-                android:textColor="#FFF" />
+                android:button="@drawable/ic_icons8_re_erase_btn"
+                android:gravity="center" />
 
             <Space
                 android:layout_width="@dimen/image_mode_space"
                 android:layout_height="wrap_content" />
 
-            <RadioButton
-                android:id="@+id/rb_mosaic"
+            <androidx.appcompat.widget.AppCompatRadioButton
+                android:id="@+id/moveMode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/image_btn_mosaic"
+                android:button="@drawable/ic_icons8_move_btn"
                 android:gravity="center"
-                android:onClick="onClick"
-                android:textColor="#FFF" />
-
-            <Space
-                android:layout_width="@dimen/image_mode_space"
-                android:layout_height="wrap_content" />
-
-            <ImageButton
-                android:id="@+id/btn_clip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:contentDescription="@string/image_clip"
-                android:gravity="center"
-                android:onClick="onClick"
-                android:src="@drawable/image_btn_clip"
-                android:textColor="#FFF" />
+                android:onClick="onClick" />
 
         </RadioGroup>
 

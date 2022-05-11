@@ -1,10 +1,15 @@
 package com.ninelock.editor.photo.views.erase;
 
+import static com.blankj.utilcode.util.SizeUtils.dp2px;
+import static me.minetsh.imaging.core.IMGMode.DOODLE;
+import static me.minetsh.imaging.core.IMGMode.NONE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.view.View;
 
 import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.views.base.BaseActivity;
@@ -14,7 +19,7 @@ import me.minetsh.imaging.core.file.IMGFileDecoder;
 import me.minetsh.imaging.core.util.IMGUtils;
 import me.minetsh.imaging.view.IMGView;
 
-public class ErasePenEditorActivity extends BaseActivity {
+public class ErasePenEditorActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String FILEPATH = "FILEPATH";
 
@@ -38,7 +43,9 @@ public class ErasePenEditorActivity extends BaseActivity {
         setContentView(R.layout.activity_editor_erase_pen);
 
         mFilepath = getIntent().getStringExtra(FILEPATH);
+
         initView();
+        initEvent();
     }
 
     public Bitmap getBitmap() {
@@ -62,6 +69,8 @@ public class ErasePenEditorActivity extends BaseActivity {
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
             imageCanvas = findViewById(R.id.imageCanvas);
+            imageCanvas.setImageTop(dp2px(48));
+            imageCanvas.setImageBottom(dp2px(68));
             imageCanvas.setImageBitmap(bitmap);
         }
     }
@@ -69,5 +78,15 @@ public class ErasePenEditorActivity extends BaseActivity {
 
     private void initEvent() {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.eraseMode) {
+            imageCanvas.setMode(DOODLE);
+        } else if (id == R.id.moveMode) {
+            imageCanvas.setMode(NONE);
+        }
     }
 }
