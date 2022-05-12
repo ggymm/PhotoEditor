@@ -8,11 +8,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import com.blankj.utilcode.util.FileIOUtils;
+import com.blankj.utilcode.util.PathUtils;
+import com.blankj.utilcode.util.ToastUtils;
+import com.hjq.bar.OnTitleBarListener;
+import com.hjq.bar.TitleBar;
 import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.views.base.BaseActivity;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Arrays;
 
 import me.minetsh.imaging.core.file.IMGDecoder;
 import me.minetsh.imaging.core.file.IMGFileDecoder;
@@ -35,7 +45,8 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private static final int MAX_HEIGHT = 1024;
     private String mFilepath;
 
-    protected IMGView imageCanvas;
+    private TitleBar mTitleBar;
+    private IMGView mImgView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,27 +77,81 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     }
 
     private void initView() {
+        mTitleBar = findViewById(R.id.titleBar);
+
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
-            imageCanvas = findViewById(R.id.imageCanvas);
-            imageCanvas.setImageTop(dp2px(48));
-            imageCanvas.setImageBottom(dp2px(68));
-            imageCanvas.setImageBitmap(bitmap);
+            mImgView = findViewById(R.id.imgView);
+            mImgView.setImageTop(dp2px(48));
+            mImgView.setImageBottom(dp2px(68));
+            mImgView.setImageBitmap(bitmap);
         }
     }
 
-
     private void initEvent() {
+        mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
 
+            @Override
+            public void onLeftClick(TitleBar titleBar) {
+                finish();
+            }
+
+            @Override
+            public void onTitleClick(TitleBar titleBar) {
+            }
+
+            @Override
+            public void onRightClick(TitleBar titleBar) {
+                ToastUtils.showLong("点击完成按钮");
+
+                // 生成像素点覆盖集合
+                Bitmap bitmap = mImgView.saveBitmapDoodle();
+
+                // 调试，输出图像
+                debug(bitmap);
+
+                new Thread(() -> {
+                    int w = bitmap.getWidth();
+                    int h = bitmap.getHeight();
+
+                    int[][] pixels = new int[w][h];
+
+                    for (int x = 0; x < w; x++) {
+                        for (int y = 0; y < h; y++) {
+                            int color = bitmap.getPixel(x, y);
+                            pixels[x][y] = Color.red(color) + Color.green(color) + Color.blue(color);
+                        }
+                    }
+
+                    FileIOUtils.writeFileFromString(new File(PathUtils.getExternalAppCachePath() + "/test.txt"), Arrays.deepToString(pixels));
+                }).start();
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.eraseMode) {
-            imageCanvas.setMode(DOODLE);
+            mImgView.setMode(DOODLE);
         } else if (id == R.id.moveMode) {
-            imageCanvas.setMode(NONE);
+            mImgView.setMode(NONE);
+        }
+    }
+
+    private void debug(Bitmap bitmap) {
+        try {
+            File file = new File(PathUtils.getExternalAppCachePath() + "/test.png");
+            if (file.exists()) {
+                file.delete();
+            }
+
+            FileOutputStream out = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

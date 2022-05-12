@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 
+import java.util.List;
+
 import me.minetsh.imaging.core.IMGImage;
 import me.minetsh.imaging.core.IMGMode;
 import me.minetsh.imaging.core.IMGPath;
@@ -41,9 +43,6 @@ public class IMGView extends FrameLayout implements Runnable,
 
     private final Pen mPen = new Pen();
 
-    private final Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
     private GestureDetector mGDetector;
 
     private ScaleGestureDetector mSGDetector;
@@ -59,6 +58,13 @@ public class IMGView extends FrameLayout implements Runnable,
     public void setImageBottom(int bottom) {
         this.mImage.setBottom(bottom);
     }
+
+    public List<IMGPath> getDoodles() {
+        return this.mImage.getDoodles();
+    }
+
+    private final Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     {
         // 涂鸦画刷
@@ -170,17 +176,9 @@ public class IMGView extends FrameLayout implements Runnable,
         mPen.setColor(color);
     }
 
-    public boolean isDoodleEmpty() {
-        return mImage.isDoodleEmpty();
-    }
-
     public void undoDoodle() {
         mImage.undoDoodle();
         invalidate();
-    }
-
-    public boolean isMosaicEmpty() {
-        return mImage.isMosaicEmpty();
     }
 
     public void undoMosaic() {
@@ -267,13 +265,13 @@ public class IMGView extends FrameLayout implements Runnable,
         RectF frame = new RectF(mImage.getClipFrame());
 
         // 旋转基画布
-        Matrix m = new Matrix();
-        m.setRotate(mImage.getRotate(), frame.centerX(), frame.centerY());
-        m.mapRect(frame);
+        Matrix matrix = new Matrix();
+        matrix.setRotate(mImage.getRotate(), frame.centerX(), frame.centerY());
+        matrix.mapRect(frame);
 
         // 缩放基画布
-        m.setScale(scale, scale, frame.left, frame.top);
-        m.mapRect(frame);
+        matrix.setScale(scale, scale, frame.left, frame.top);
+        matrix.mapRect(frame);
 
         Bitmap bitmap = Bitmap.createBitmap(Math.round(frame.width()), Math.round(frame.height()), Bitmap.Config.ARGB_8888);
 
@@ -284,6 +282,33 @@ public class IMGView extends FrameLayout implements Runnable,
         canvas.scale(scale, scale, frame.left, frame.top);
 
         onDrawImages(canvas);
+
+        return bitmap;
+    }
+
+    public Bitmap saveBitmapDoodle() {
+        float scale = 1f / mImage.getScale();
+
+        RectF frame = new RectF(mImage.getClipFrame());
+
+        // 旋转基画布
+        Matrix matrix = new Matrix();
+        matrix.setRotate(mImage.getRotate(), frame.centerX(), frame.centerY());
+        matrix.mapRect(frame);
+
+        // 缩放基画布
+        matrix.setScale(scale, scale, frame.left, frame.top);
+        matrix.mapRect(frame);
+
+        Bitmap bitmap = Bitmap.createBitmap(Math.round(frame.width()), Math.round(frame.height()), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        // 平移到基画布原点&缩放到原尺寸
+        canvas.translate(-frame.left, -frame.top);
+        canvas.scale(scale, scale, frame.left, frame.top);
+
+        mImage.onDrawDoodles(canvas);
 
         return bitmap;
     }
@@ -328,12 +353,12 @@ public class IMGView extends FrameLayout implements Runnable,
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (ev.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            return onInterceptTouch(ev) || super.onInterceptTouchEvent(ev);
+            return onInterceptTouch() || super.onInterceptTouchEvent(ev);
         }
         return super.onInterceptTouchEvent(ev);
     }
 
-    boolean onInterceptTouch(MotionEvent event) {
+    boolean onInterceptTouch() {
         if (isHoming()) {
             stopHoming();
             return true;
@@ -343,9 +368,15 @@ public class IMGView extends FrameLayout implements Runnable,
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                performClick();
                 removeCallbacks(this);
                 break;
             case MotionEvent.ACTION_UP:
@@ -578,7 +609,6 @@ public class IMGView extends FrameLayout implements Runnable,
 
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            // TODO
             return super.onFling(e1, e2, velocityX, velocityY);
         }
     }

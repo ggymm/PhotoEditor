@@ -6,19 +6,15 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 
-/**
- * Created by felix on 2017/11/22 下午6:13.
- */
-
 public class IMGPath {
 
     protected Path path;
 
-    private int color = Color.RED;
+    private int color;
 
-    private float width = BASE_MOSAIC_WIDTH;
+    private float width;
 
-    private IMGMode mode = IMGMode.DOODLE;
+    private IMGMode mode;
 
     public static final float BASE_DOODLE_WIDTH = 20f;
 
@@ -54,10 +50,6 @@ public class IMGPath {
         return path;
     }
 
-    public void setPath(Path path) {
-        this.path = path;
-    }
-
     public int getColor() {
         return color;
     }
@@ -66,20 +58,20 @@ public class IMGPath {
         this.color = color;
     }
 
-    public IMGMode getMode() {
-        return mode;
-    }
-
-    public void setMode(IMGMode mode) {
-        this.mode = mode;
-    }
-
     public void setWidth(float width) {
         this.width = width;
     }
 
     public float getWidth() {
         return width;
+    }
+
+    public IMGMode getMode() {
+        return mode;
+    }
+
+    public void setMode(IMGMode mode) {
+        this.mode = mode;
     }
 
     public void onDrawDoodle(Canvas canvas, Paint paint) {
@@ -100,5 +92,15 @@ public class IMGPath {
 
     public void transform(Matrix matrix) {
         path.transform(matrix);
+    }
+
+    @Override
+    public String toString() {
+        return "IMGPath{" +
+                "path=" + path +
+                ", color=" + color +
+                ", width=" + width +
+                ", mode=" + mode +
+                '}';
     }
 }

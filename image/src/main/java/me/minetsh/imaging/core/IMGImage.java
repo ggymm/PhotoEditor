@@ -73,12 +73,12 @@ public class IMGImage {
      */
     private IMGMode mMode = IMGMode.NONE;
 
-    private boolean isFreezing = mMode == IMGMode.CLIP;
+    private boolean isFreezing = false;
 
     /**
      * 可视区域，无Scroll 偏移区域
      */
-    private RectF mWindow = new RectF();
+    private final RectF mWindow = new RectF();
 
     /**
      * 是否初始位置
@@ -93,25 +93,27 @@ public class IMGImage {
     /**
      * 为被选中贴片
      */
-    private List<IMGSticker> mBackStickers = new ArrayList<>();
+    private final List<IMGSticker> mBackStickers = new ArrayList<>();
 
     /**
      * 涂鸦路径
      */
-    private List<IMGPath> mDoodles = new ArrayList<>();
+    private final List<IMGPath> mDoodles = new ArrayList<>();
 
     /**
      * 马赛克路径
      */
-    private List<IMGPath> mMosaics = new ArrayList<>();
+    private final List<IMGPath> mMosaics = new ArrayList<>();
 
     private static final int MIN_SIZE = 500;
 
     private static final int MAX_SIZE = 10000;
 
-    private Paint mPaint, mMosaicPaint, mShadePaint;
+    private final Paint mPaint;
+    private Paint mMosaicPaint;
+    private Paint mShadePaint;
 
-    private Matrix M = new Matrix();
+    private final Matrix M = new Matrix();
 
     private static final boolean DEBUG = false;
 
@@ -778,5 +780,9 @@ public class IMGImage {
         if (DEFAULT_IMAGE != null) {
             DEFAULT_IMAGE.recycle();
         }
+    }
+
+    public List<IMGPath> getDoodles() {
+        return mDoodles;
     }
 }
