@@ -12,6 +12,7 @@ import android.provider.OpenableColumns;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
+import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.luck.picture.lib.basic.PictureSelector;
@@ -20,6 +21,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.config.GlideEngine;
+import com.ninelock.editor.photo.config.picture.SandboxFileEngine;
 import com.ninelock.editor.photo.config.picture.SelectorWhiteStyle;
 import com.ninelock.editor.photo.views.base.BaseActivity;
 import com.ninelock.editor.photo.views.erase.ErasePenEditorActivity;
@@ -49,7 +51,7 @@ public class MainActivity extends BaseActivity {
                 String filename = returnCursor.getString(nameIndex);
                 String fileSize = Long.toString(returnCursor.getLong(sizeIndex));
 
-                String tempPath = PathUtils.getExternalAppDataPath() + "/temp_photo";
+                String tempPath = PathUtils.getExternalAppFilesPath() + "/temp_photo";
                 File tempFolder = new File(tempPath);
                 if (!tempFolder.exists()) {
                     tempFolder.mkdirs();
@@ -103,18 +105,21 @@ public class MainActivity extends BaseActivity {
             PictureSelector.create(this)
                     .openGallery(SelectMimeType.ofImage())
                     .setImageEngine(GlideEngine.createGlideEngine())
+                    .setSandboxFileEngine(new SandboxFileEngine())
                     .setSelectorUIStyle(SelectorWhiteStyle.get(this))
                     .setSelectionMode(SINGLE)
                     .isEmptyResultReturn(true)
                     .forResult(new OnResultCallbackListener<>() {
                         @Override
                         public void onResult(ArrayList<LocalMedia> result) {
-                            System.out.println(result);
+                            if (CollectionUtils.isNotEmpty(result)) {
+                                LocalMedia localMedia = result.get(0);
+                                ErasePenEditorActivity.goEditor(MainActivity.this, localMedia.getSandboxPath());
+                            }
                         }
 
                         @Override
                         public void onCancel() {
-
                         }
                     });
         });
