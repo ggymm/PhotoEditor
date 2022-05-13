@@ -1,5 +1,7 @@
 package com.ninelock.editor.photo.views;
 
+import static com.luck.picture.lib.config.SelectModeConfig.SINGLE;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,15 +14,20 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.luck.picture.lib.basic.PictureSelector;
+import com.luck.picture.lib.config.SelectMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.interfaces.OnResultCallbackListener;
 import com.ninelock.editor.photo.R;
+import com.ninelock.editor.photo.config.GlideEngine;
+import com.ninelock.editor.photo.config.picture.SelectorWhiteStyle;
 import com.ninelock.editor.photo.views.base.BaseActivity;
 import com.ninelock.editor.photo.views.erase.ErasePenEditorActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-
-import me.minetsh.imaging.IMGEditActivity;
+import java.util.ArrayList;
 
 public class MainActivity extends BaseActivity {
 
@@ -66,9 +73,6 @@ public class MainActivity extends BaseActivity {
                 // TODO: 跳转页面
                 String tempPhotoPath = tempFile.getAbsolutePath();
                 ErasePenEditorActivity.goEditor(this, tempPhotoPath);
-                // Intent intent = new Intent(this, IMGEditActivity.class);
-                // intent.putExtra(IMGEditActivity.EXTRA_IMAGE_URI, tempPhotoPath);
-                // this.startActivity(intent);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -96,6 +100,23 @@ public class MainActivity extends BaseActivity {
 
         findViewById(R.id.selectPhoto).setOnClickListener(v -> {
             // 选择图片，拷贝到应用所属目录
+            PictureSelector.create(this)
+                    .openGallery(SelectMimeType.ofImage())
+                    .setImageEngine(GlideEngine.createGlideEngine())
+                    .setSelectorUIStyle(SelectorWhiteStyle.get(this))
+                    .setSelectionMode(SINGLE)
+                    .isEmptyResultReturn(true)
+                    .forResult(new OnResultCallbackListener<>() {
+                        @Override
+                        public void onResult(ArrayList<LocalMedia> result) {
+                            System.out.println(result);
+                        }
+
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    });
         });
     }
 }
