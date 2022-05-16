@@ -23,6 +23,7 @@ import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.config.GlideEngine;
 import com.ninelock.editor.photo.config.picture.SandboxFileEngine;
 import com.ninelock.editor.photo.config.picture.SelectorWhiteStyle;
+import com.ninelock.editor.photo.jna.IiauApp;
 import com.ninelock.editor.photo.views.base.BaseActivity;
 import com.ninelock.editor.photo.views.erase.ErasePenEditorActivity;
 
@@ -47,9 +48,7 @@ public class MainActivity extends BaseActivity {
                 returnCursor.moveToFirst();
 
                 int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
                 String filename = returnCursor.getString(nameIndex);
-                String fileSize = Long.toString(returnCursor.getLong(sizeIndex));
 
                 String tempPath = PathUtils.getExternalAppFilesPath() + "/temp_photo";
                 File tempFolder = new File(tempPath);
@@ -72,10 +71,8 @@ public class MainActivity extends BaseActivity {
                 inputStream.close();
                 outputStream.close();
 
-                // TODO: 跳转页面
                 String tempPhotoPath = tempFile.getAbsolutePath();
                 ErasePenEditorActivity.goEditor(this, tempPhotoPath);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -93,12 +90,10 @@ public class MainActivity extends BaseActivity {
     private void initEvent() {
 
         findViewById(R.id.selectFile).setOnClickListener(v -> {
-            // 点击左上，选择外置存储后，再选择文件
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*").addCategory(Intent.CATEGORY_OPENABLE);
             mLauncher.launch(intent);
         });
-
 
         findViewById(R.id.selectPhoto).setOnClickListener(v -> {
             // 选择图片，拷贝到应用所属目录
@@ -113,7 +108,9 @@ public class MainActivity extends BaseActivity {
                         @Override
                         public void onResult(ArrayList<LocalMedia> result) {
                             if (CollectionUtils.isNotEmpty(result)) {
+                                // 获取选择的文件
                                 LocalMedia localMedia = result.get(0);
+                                // 跳转编辑页面
                                 ErasePenEditorActivity.goEditor(MainActivity.this, localMedia.getSandboxPath());
                             }
                         }
@@ -122,6 +119,15 @@ public class MainActivity extends BaseActivity {
                         public void onCancel() {
                         }
                     });
+        });
+
+        findViewById(R.id.runJna).setOnClickListener(v -> {
+            IiauApp instance = IiauApp.Instance;
+            String test = instance._ZN7IIAUAPP10INPAINTINGC1ESs("test", "test");
+            // String test = instance._ZN7IIAUAPP10INPAINTING7recoverESsSsSs("test", "test", "test");
+            // String test = instance.Java_com_dlut_test_MainActivity_stringFromJNI();
+
+            System.out.println(test);
         });
     }
 }

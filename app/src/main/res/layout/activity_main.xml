@@ -28,4 +28,10 @@
         android:layout_height="60dp"
         android:text="@string/select_photo" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/runJna"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/run_jna" />
+
 </androidx.appcompat.widget.LinearLayoutCompat>
