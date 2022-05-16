@@ -23,7 +23,7 @@ import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.config.GlideEngine;
 import com.ninelock.editor.photo.config.picture.SandboxFileEngine;
 import com.ninelock.editor.photo.config.picture.SelectorWhiteStyle;
-import com.ninelock.editor.photo.jna.IiauApp;
+import com.ninelock.editor.photo.jni.IiauApp;
 import com.ninelock.editor.photo.views.base.BaseActivity;
 import com.ninelock.editor.photo.views.erase.ErasePenEditorActivity;
 
@@ -122,8 +122,8 @@ public class MainActivity extends BaseActivity {
         });
 
         findViewById(R.id.runJna).setOnClickListener(v -> {
-            IiauApp instance = IiauApp.Instance;
-            String test = instance._ZN7IIAUAPP10INPAINTINGC1ESs("test", "test");
+            IiauApp iiauApp = new IiauApp();
+            String test = iiauApp.stringFromJNI();
             // String test = instance._ZN7IIAUAPP10INPAINTING7recoverESsSsSs("test", "test", "test");
             // String test = instance.Java_com_dlut_test_MainActivity_stringFromJNI();
 
