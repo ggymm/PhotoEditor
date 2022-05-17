@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import com.blankj.utilcode.util.CollectionUtils;
 import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.dlut.iiauapp.InpaintingNative;
 import com.luck.picture.lib.basic.PictureSelector;
 import com.luck.picture.lib.config.SelectMimeType;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -121,9 +122,18 @@ public class MainActivity extends BaseActivity {
         });
 
         findViewById(R.id.runJna).setOnClickListener(v -> {
-            com.dlut.test.MainActivity iiauApp = new com.dlut.test.MainActivity();
-            String test = iiauApp.stringFromJNI();
-            System.out.println(test);
+//            com.dlut.test.MainActivity iiauApp = new com.dlut.test.MainActivity();
+//            String test = iiauApp.stringFromJNI();
+//            System.out.println(test);
+
+            InpaintingNative inpaintingNative = new InpaintingNative();
+            int out = inpaintingNative.inpainting("/storage/emulated/0/$MuMu共享文件夹/aaa.png", "/storage/emulated/0/$MuMu共享文件夹/mask.png","/storage/emulated/0/$MuMu共享文件夹/out.png");
+            if(out>0){
+                System.out.println("处理成功");
+            }else{
+                System.out.println("处理失败");
+            }
+            inpaintingNative.deinit();
         });
     }
 }
