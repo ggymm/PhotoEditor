@@ -1,6 +1,6 @@
 package com.ninelock.editor.photo.views.erase;
 
-import static com.blankj.utilcode.util.SizeUtils.dp2px;
+import static com.ninelock.editor.photo.utils.ImageUtils.getFileExt;
 import static me.minetsh.imaging.core.IMGMode.DOODLE;
 import static me.minetsh.imaging.core.IMGMode.NONE;
 
@@ -8,13 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
-import com.blankj.utilcode.util.FileIOUtils;
-import com.blankj.utilcode.util.PathUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.dlut.iiauapp.InpaintingNative;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
 import com.ninelock.editor.photo.R;
@@ -22,7 +19,6 @@ import com.ninelock.editor.photo.views.base.BaseActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Arrays;
 
 import me.minetsh.imaging.core.file.IMGDecoder;
 import me.minetsh.imaging.core.file.IMGFileDecoder;
@@ -32,21 +28,30 @@ import me.minetsh.imaging.view.IMGView;
 public class ErasePenEditorActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String FILEPATH = "FILEPATH";
+    private static final String FILENAME = "FILENAME";
 
-    public static void goEditor(Context context, String filepath) {
+    public static void goEditor(Context context, String filepath, String filename) {
         Intent intent = new Intent(context, ErasePenEditorActivity.class);
 
         intent.putExtra(FILEPATH, filepath);
+        intent.putExtra(FILENAME, filename);
 
         context.startActivity(intent);
     }
 
     private static final int MAX_WIDTH = 1024;
     private static final int MAX_HEIGHT = 1024;
+
+    private int imageScale;
     private String mFilepath;
+    private String mFilename;
 
     private TitleBar mTitleBar;
     private IMGView mImgView;
+
+    private int step;
+    private String projectDir;
+    private String projectCurrentFilepath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +59,17 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.activity_editor_erase_pen);
 
         mFilepath = getIntent().getStringExtra(FILEPATH);
+        mFilename = getIntent().getStringExtra(FILENAME);
+
+        step = 1;
+        projectDir = null;
 
         initView();
         initEvent();
     }
 
-    public Bitmap getBitmap() {
-        IMGDecoder decoder = new IMGFileDecoder(mFilepath);
+    public Bitmap getBitmap(String filepath) {
+        IMGDecoder decoder = new IMGFileDecoder(filepath);
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 1;
         options.inJustDecodeBounds = true;
@@ -73,17 +82,16 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         }
         options.inJustDecodeBounds = false;
 
+        imageScale = options.inSampleSize;
         return decoder.decode(options);
     }
 
     private void initView() {
         mTitleBar = findViewById(R.id.titleBar);
 
-        Bitmap bitmap = getBitmap();
+        Bitmap bitmap = getBitmap(mFilepath);
         if (bitmap != null) {
             mImgView = findViewById(R.id.imgView);
-            mImgView.setImageTop(dp2px(48));
-            mImgView.setImageBottom(dp2px(68));
             mImgView.setImageBitmap(bitmap);
         }
     }
@@ -102,29 +110,11 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
             @Override
             public void onRightClick(TitleBar titleBar) {
-                ToastUtils.showLong("点击完成按钮");
-
-                // 生成像素点覆盖集合
-                Bitmap bitmap = mImgView.saveBitmapDoodle();
-
-                // 调试，输出图像
-                debug(bitmap);
-
-                new Thread(() -> {
-                    int w = bitmap.getWidth();
-                    int h = bitmap.getHeight();
-
-                    int[][] pixels = new int[w][h];
-
-                    for (int x = 0; x < w; x++) {
-                        for (int y = 0; y < h; y++) {
-                            int color = bitmap.getPixel(x, y);
-                            pixels[x][y] = Color.red(color) + Color.green(color) + Color.blue(color);
-                        }
-                    }
-
-                    FileIOUtils.writeFileFromString(new File(PathUtils.getExternalAppCachePath() + "/test.txt"), Arrays.deepToString(pixels));
-                }).start();
+                try {
+                    runNative();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -139,19 +129,59 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         }
     }
 
-    private void debug(Bitmap bitmap) {
-        try {
-            File file = new File(PathUtils.getExternalAppCachePath() + "/test.png");
-            if (file.exists()) {
-                file.delete();
+    private void runNative() throws Exception {
+        if (step == 1) {
+            // 创建工程目录
+            projectDir = getExternalFilesDir(null) + "/project_" + mFilename + "/";
+            File projectFolder = new File(projectDir);
+            if (projectFolder.exists()) {
+                projectFolder.delete();
+            } else {
+                projectFolder.mkdirs();
             }
 
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            // 拷贝原图到工程目录
+            projectCurrentFilepath = projectDir + "origin." + getFileExt(mFilename);
+
+            File originFile = new File(projectCurrentFilepath);
+            if (originFile.exists()) {
+                originFile.delete();
+            }
+            FileOutputStream stream = new FileOutputStream(originFile);
+            mImgView.saveBitmapImage().compress(Bitmap.CompressFormat.PNG, 100, stream);
+            stream.flush();
+            stream.close();
         }
+
+        // 生成轨迹图片
+        File maskFile = new File(projectDir + "mask_" + step + ".png");
+        if (maskFile.exists()) {
+            maskFile.delete();
+        }
+        FileOutputStream stream = new FileOutputStream(maskFile);
+        mImgView.saveBitmapDoodle().compress(Bitmap.CompressFormat.PNG, 100, stream);
+        stream.flush();
+        stream.close();
+
+        // 结果图片地址
+        String resultFile = projectDir + "result_" + step + ".png";
+
+        // 调用jni方法
+        new Thread(() -> {
+            InpaintingNative inpaintingNative = new InpaintingNative();
+            inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
+
+            step++;
+            projectCurrentFilepath = resultFile;
+
+            // 清除轨迹
+            mImgView.reset();
+
+            // 加载新图片
+            Bitmap bitmap = getBitmap(resultFile);
+            if (bitmap != null) {
+                mImgView.setImageBitmap(bitmap);
+            }
+        }).start();
     }
 }

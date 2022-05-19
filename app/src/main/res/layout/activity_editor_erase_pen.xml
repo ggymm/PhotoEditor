@@ -9,6 +9,8 @@
         android:id="@+id/imgView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/header_height"
+        android:layout_marginBottom="@dimen/bottom_header"
         android:background="#ffffff" />
 
     <LinearLayout
@@ -20,7 +22,7 @@
         <com.hjq.bar.TitleBar
             android:id="@+id/titleBar"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/header_height"
             android:background="@color/title_bar_color"
             app:rightTitle="完成"
             app:rightTitleColor="@color/title_bar_right_color"

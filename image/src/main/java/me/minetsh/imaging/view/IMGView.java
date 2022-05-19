@@ -51,14 +51,6 @@ public class IMGView extends FrameLayout implements Runnable,
 
     private int mPointerCount = 0;
 
-    public void setImageTop(int top) {
-        this.mImage.setTop(top);
-    }
-
-    public void setImageBottom(int bottom) {
-        this.mImage.setBottom(bottom);
-    }
-
     public List<IMGPath> getDoodles() {
         return this.mImage.getDoodles();
     }
@@ -101,6 +93,11 @@ public class IMGView extends FrameLayout implements Runnable,
         mPen.setMode(mImage.getMode());
         mGDetector = new GestureDetector(context, new MoveAdapter());
         mSGDetector = new ScaleGestureDetector(context, this);
+    }
+
+    public void reset() {
+        mImage.clearDoodles();
+        invalidate();
     }
 
     public void setImageBitmap(Bitmap image) {
@@ -286,7 +283,9 @@ public class IMGView extends FrameLayout implements Runnable,
         return bitmap;
     }
 
-    public Bitmap saveBitmapDoodle() {
+    public Bitmap saveBitmapImage() {
+        mImage.stickAll();
+
         float scale = 1f / mImage.getScale();
 
         RectF frame = new RectF(mImage.getClipFrame());
@@ -307,6 +306,48 @@ public class IMGView extends FrameLayout implements Runnable,
         // 平移到基画布原点&缩放到原尺寸
         canvas.translate(-frame.left, -frame.top);
         canvas.scale(scale, scale, frame.left, frame.top);
+
+        canvas.save();
+
+        // clip 中心旋转
+        RectF clipFrame = mImage.getClipFrame();
+        canvas.rotate(mImage.getRotate(), clipFrame.centerX(), clipFrame.centerY());
+
+        // 图片
+        mImage.onDrawImage(canvas);
+
+        return bitmap;
+    }
+
+    public Bitmap saveBitmapDoodle() {
+        mImage.stickAll();
+
+        float scale = 1f / mImage.getScale();
+
+        RectF frame = new RectF(mImage.getClipFrame());
+
+        // 旋转基画布
+        Matrix matrix = new Matrix();
+        matrix.setRotate(mImage.getRotate(), frame.centerX(), frame.centerY());
+        matrix.mapRect(frame);
+
+        // 缩放基画布
+        matrix.setScale(scale, scale, frame.left, frame.top);
+        matrix.mapRect(frame);
+
+        Bitmap bitmap = Bitmap.createBitmap(Math.round(frame.width()), Math.round(frame.height()), Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+
+        // 平移到基画布原点&缩放到原尺寸
+        canvas.translate(-frame.left, -frame.top);
+        canvas.scale(scale, scale, frame.left, frame.top);
+
+        canvas.save();
+
+        // clip 中心旋转
+        RectF clipFrame = mImage.getClipFrame();
+        canvas.rotate(mImage.getRotate(), clipFrame.centerX(), clipFrame.centerY());
 
         mImage.onDrawDoodles(canvas);
 

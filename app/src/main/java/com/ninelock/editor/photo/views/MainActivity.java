@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity {
                 outputStream.close();
 
                 String tempPhotoPath = tempFile.getAbsolutePath();
-                ErasePenEditorActivity.goEditor(this, tempPhotoPath);
+                ErasePenEditorActivity.goEditor(this, tempPhotoPath, filename);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -111,7 +111,7 @@ public class MainActivity extends BaseActivity {
                                 // 获取选择的文件
                                 LocalMedia localMedia = result.get(0);
                                 // 跳转编辑页面
-                                ErasePenEditorActivity.goEditor(MainActivity.this, localMedia.getSandboxPath());
+                                ErasePenEditorActivity.goEditor(MainActivity.this, localMedia.getSandboxPath(), localMedia.getFileName());
                             }
                         }
 
@@ -122,9 +122,6 @@ public class MainActivity extends BaseActivity {
         });
 
         findViewById(R.id.runJna).setOnClickListener(v -> {
-//            com.dlut.test.MainActivity iiauApp = new com.dlut.test.MainActivity();
-//            String test = iiauApp.stringFromJNI();
-//            System.out.println(test);
 
             InpaintingNative inpaintingNative = new InpaintingNative();
             int out = inpaintingNative.inpainting("/storage/emulated/0/$MuMu共享文件夹/aaa.png", "/storage/emulated/0/$MuMu共享文件夹/mask.png","/storage/emulated/0/$MuMu共享文件夹/out.png");

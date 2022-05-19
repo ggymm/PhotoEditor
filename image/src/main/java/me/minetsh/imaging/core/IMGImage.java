@@ -121,17 +121,6 @@ public class IMGImage {
 
     private static final int COLOR_SHADE = 0xCC000000;
 
-    private int top;
-    private int bottom;
-
-    public void setTop(int top) {
-        this.top = top;
-    }
-
-    public void setBottom(int bottom) {
-        this.bottom = bottom;
-    }
-
     static {
         DEFAULT_IMAGE = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
     }
@@ -462,8 +451,7 @@ public class IMGImage {
             return;
         }
 
-        // 预留顶部标题和底部菜单
-        mWindow.set(0, top, width, height - bottom);
+        mWindow.set(0, 0, width, height);
 
         if (!isInitialHoming) {
             onInitialHoming(width, height);
@@ -784,5 +772,9 @@ public class IMGImage {
 
     public List<IMGPath> getDoodles() {
         return mDoodles;
+    }
+
+    public void clearDoodles() {
+        this.mDoodles.clear();
     }
 }

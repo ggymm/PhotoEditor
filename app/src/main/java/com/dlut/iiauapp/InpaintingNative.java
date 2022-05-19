@@ -1,5 +1,6 @@
 package com.dlut.iiauapp;
 
+@SuppressWarnings("ALL")
 public class InpaintingNative extends CommonNative {
     public InpaintingNative() {
         init(modelRootPath+"inpainting.mnn");

@@ -1,6 +1,6 @@
 package com.ninelock.editor.photo.config.picture;
 
-import static com.luck.picture.lib.config.PictureMimeType.JPG;
+import static com.luck.picture.lib.config.PictureMimeType.getLastImgSuffix;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -31,14 +31,7 @@ public class SandboxFileEngine implements UriToFileTransformEngine {
         }
     }
 
-    private String getLastImgSuffix(String mineType) {
-        try {
-            return mineType.substring(mineType.lastIndexOf("/")).replace("/", ".");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return JPG;
-        }
-    }
+
 
     private File createSandboxFile(String mineType) {
         long millis = System.currentTimeMillis();

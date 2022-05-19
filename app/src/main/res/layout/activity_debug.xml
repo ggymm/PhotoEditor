@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".views.MainActivity">
+
+    <com.hjq.bar.TitleBar
+        android:id="@+id/titleBar"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:background="@color/title_bar_color"
+        app:leftIcon="@null"
+        app:title="@string/debug_activity_title" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/selectFile"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/select_file" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/selectPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/select_photo" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/runJna"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/run_jna" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

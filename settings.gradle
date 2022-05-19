@@ -14,5 +14,5 @@ dependencyResolutionManagement {
         maven { url 'https://jitpack.io' }
     }
 }
-rootProject.name = "iiauapp"
+rootProject.name = "PhotoEditor"
 include ':app', ':image', ':selector'
