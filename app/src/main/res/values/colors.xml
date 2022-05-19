@@ -2,6 +2,8 @@
 <resources>
     <color name="background_color">#FFFFFF</color>
 
+    <color name="common_background_color">#FFFFFF</color>
+
     <color name="title_bar_color">#FFFFFF</color>
     <color name="title_bar_right_color">#000000</color>
 </resources>

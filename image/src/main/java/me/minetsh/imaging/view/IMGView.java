@@ -58,12 +58,14 @@ public class IMGView extends FrameLayout implements Runnable,
     private final Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+    private float doodleWidth = 20f;
+
     {
         // 涂鸦画刷
         mDoodlePaint.setStyle(Paint.Style.STROKE);
-        mDoodlePaint.setStrokeWidth(IMGPath.BASE_DOODLE_WIDTH);
+        mDoodlePaint.setStrokeWidth(doodleWidth);
         mDoodlePaint.setColor(Color.RED);
-        mDoodlePaint.setPathEffect(new CornerPathEffect(IMGPath.BASE_DOODLE_WIDTH));
+        mDoodlePaint.setPathEffect(new CornerPathEffect(doodleWidth));
         mDoodlePaint.setStrokeCap(Paint.Cap.ROUND);
         mDoodlePaint.setStrokeJoin(Paint.Join.ROUND);
 
@@ -74,6 +76,14 @@ public class IMGView extends FrameLayout implements Runnable,
         mMosaicPaint.setPathEffect(new CornerPathEffect(IMGPath.BASE_MOSAIC_WIDTH));
         mMosaicPaint.setStrokeCap(Paint.Cap.ROUND);
         mMosaicPaint.setStrokeJoin(Paint.Join.ROUND);
+    }
+
+    public void setDoodleWidth(float doodleWidth) {
+        this.doodleWidth = doodleWidth;
+    }
+
+    public float getDoodleWidth() {
+        return doodleWidth;
     }
 
     public IMGView(Context context) {
@@ -218,10 +228,10 @@ public class IMGView extends FrameLayout implements Runnable,
         }
 
         // 涂鸦
-        mImage.onDrawDoodles(canvas);
+        mImage.onDrawDoodles(canvas, doodleWidth);
         if (mImage.getMode() == IMGMode.DOODLE && !mPen.isEmpty()) {
             mDoodlePaint.setColor(mPen.getColor());
-            mDoodlePaint.setStrokeWidth(IMGPath.BASE_DOODLE_WIDTH * mImage.getScale());
+            mDoodlePaint.setStrokeWidth(doodleWidth * mImage.getScale());
             canvas.save();
             RectF frame = mImage.getClipFrame();
             canvas.rotate(-mImage.getRotate(), frame.centerX(), frame.centerY());
@@ -349,7 +359,7 @@ public class IMGView extends FrameLayout implements Runnable,
         RectF clipFrame = mImage.getClipFrame();
         canvas.rotate(mImage.getRotate(), clipFrame.centerX(), clipFrame.centerY());
 
-        mImage.onDrawDoodles(canvas);
+        mImage.onDrawDoodles(canvas, doodleWidth);
 
         return bitmap;
     }

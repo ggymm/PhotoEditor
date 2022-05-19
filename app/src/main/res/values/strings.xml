@@ -9,4 +9,5 @@
     <string name="run_jna">执行so库中方法</string>
 
     <string name="erase_pen">擦除笔功能</string>
+    <string name="erase_btn_title">GO</string>
 </resources>

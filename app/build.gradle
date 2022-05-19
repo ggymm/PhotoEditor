@@ -48,6 +48,9 @@ dependencies {
     implementation project(':selector')
 
     implementation 'androidx.appcompat:appcompat:1.4.1'
+
+    implementation 'com.qmuiteam:qmui:2.1.0'
+
     implementation 'com.github.getActivity:TitleBar:9.3'
     implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
 

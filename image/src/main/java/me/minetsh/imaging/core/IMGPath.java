@@ -16,8 +16,6 @@ public class IMGPath {
 
     private IMGMode mode;
 
-    public static final float BASE_DOODLE_WIDTH = 20f;
-
     public static final float BASE_MOSAIC_WIDTH = 72f;
 
     public IMGPath() {
@@ -74,10 +72,10 @@ public class IMGPath {
         this.mode = mode;
     }
 
-    public void onDrawDoodle(Canvas canvas, Paint paint) {
+    public void onDrawDoodle(Canvas canvas, Paint paint, float doodleWidth) {
         if (mode == IMGMode.DOODLE) {
             paint.setColor(color);
-            paint.setStrokeWidth(BASE_DOODLE_WIDTH);
+            paint.setStrokeWidth(doodleWidth);
             // rewind
             canvas.drawPath(path, paint);
         }

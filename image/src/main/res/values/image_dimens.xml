@@ -6,7 +6,7 @@
     <dimen name="image_color_margin">6dp</dimen>
 
     <dimen name="image_mode_btn">32dp</dimen>
-    <dimen name="image_mode_space">36dp</dimen>
+    <dimen name="image_mode_space">48dp</dimen>
 
 
 </resources>

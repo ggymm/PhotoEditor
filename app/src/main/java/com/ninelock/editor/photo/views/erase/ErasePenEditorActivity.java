@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.SeekBar;
 
 import com.dlut.iiauapp.InpaintingNative;
 import com.hjq.bar.OnTitleBarListener;
@@ -42,12 +43,13 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private static final int MAX_WIDTH = 1024;
     private static final int MAX_HEIGHT = 1024;
 
-    private int imageScale;
     private String mFilepath;
     private String mFilename;
 
     private TitleBar mTitleBar;
+
     private IMGView mImgView;
+    private SeekBar mPenSize;
 
     private int step;
     private String projectDir;
@@ -82,18 +84,22 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         }
         options.inJustDecodeBounds = false;
 
-        imageScale = options.inSampleSize;
         return decoder.decode(options);
     }
 
     private void initView() {
+        // 标题栏
         mTitleBar = findViewById(R.id.titleBar);
 
+        // 图像
+        mImgView = findViewById(R.id.imgView);
         Bitmap bitmap = getBitmap(mFilepath);
         if (bitmap != null) {
-            mImgView = findViewById(R.id.imgView);
             mImgView.setImageBitmap(bitmap);
         }
+
+        // 画笔宽度
+        mPenSize = findViewById(R.id.penSize);
     }
 
     private void initEvent() {
@@ -111,10 +117,33 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
             @Override
             public void onRightClick(TitleBar titleBar) {
                 try {
-                    runNative();
+                    // runNative();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+
+        mPenSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (progress <= 0) {
+                    mPenSize.setProgress(1);
+                    return;
+                }
+                if ((int) mImgView.getDoodleWidth() == progress) {
+                    return;
+                }
+                mImgView.setDoodleWidth(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
     }
@@ -122,7 +151,16 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.eraseMode) {
+        if (id == R.id.doErase) {
+
+            new Thread(() -> {
+                try {
+                    runNative();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } else if (id == R.id.eraseMode) {
             mImgView.setMode(DOODLE);
         } else if (id == R.id.moveMode) {
             mImgView.setMode(NONE);
@@ -167,21 +205,19 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         String resultFile = projectDir + "result_" + step + ".png";
 
         // 调用jni方法
-        new Thread(() -> {
-            InpaintingNative inpaintingNative = new InpaintingNative();
-            inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
+        InpaintingNative inpaintingNative = new InpaintingNative();
+        inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
 
-            step++;
-            projectCurrentFilepath = resultFile;
+        step++;
+        projectCurrentFilepath = resultFile;
 
-            // 清除轨迹
-            mImgView.reset();
+        // 清除轨迹
+        mImgView.reset();
 
-            // 加载新图片
-            Bitmap bitmap = getBitmap(resultFile);
-            if (bitmap != null) {
-                mImgView.setImageBitmap(bitmap);
-            }
-        }).start();
+        // 加载新图片
+        Bitmap bitmap = getBitmap(resultFile);
+        if (bitmap != null) {
+            mImgView.setImageBitmap(bitmap);
+        }
     }
 }

@@ -131,9 +131,9 @@ public class IMGImage {
         // Doodle&Mosaic 's paint
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(IMGPath.BASE_DOODLE_WIDTH);
+        mPaint.setStrokeWidth(20f);
         mPaint.setColor(Color.RED);
-        mPaint.setPathEffect(new CornerPathEffect(IMGPath.BASE_DOODLE_WIDTH));
+        mPaint.setPathEffect(new CornerPathEffect(20f));
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
     }
@@ -544,14 +544,14 @@ public class IMGImage {
         canvas.restoreToCount(layerCount);
     }
 
-    public void onDrawDoodles(Canvas canvas) {
+    public void onDrawDoodles(Canvas canvas, float doodleWidth) {
         if (!isDoodleEmpty()) {
             canvas.save();
             float scale = getScale();
             canvas.translate(mFrame.left, mFrame.top);
             canvas.scale(scale, scale);
             for (IMGPath path : mDoodles) {
-                path.onDrawDoodle(canvas, mPaint);
+                path.onDrawDoodle(canvas, mPaint, doodleWidth);
             }
             canvas.restore();
         }
