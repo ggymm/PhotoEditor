@@ -43,7 +43,7 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="尺寸" />
+                android:text="@string/erase_pen_size_text" />
 
             <SeekBar
                 android:id="@+id/penSize"
@@ -52,7 +52,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:max="50"
+                android:max="30"
                 android:maxHeight="36dp"
                 android:minHeight="36dp"
                 android:progressDrawable="@drawable/doodle_seekbar_background"
@@ -63,7 +63,8 @@
                 android:id="@+id/doErase"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:text="@string/erase_btn_title"
+                android:onClick="onClick"
+                android:text="@string/erase_btn_text"
                 app:qmui_isRadiusAdjustBounds="true" />
 
         </LinearLayout>

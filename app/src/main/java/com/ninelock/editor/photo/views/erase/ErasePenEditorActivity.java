@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.blankj.utilcode.util.FileUtils;
 import com.dlut.iiauapp.InpaintingNative;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
@@ -100,6 +101,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
         // 画笔宽度
         mPenSize = findViewById(R.id.penSize);
+        mPenSize.setProgress(15);
     }
 
     private void initEvent() {
@@ -116,14 +118,10 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
             @Override
             public void onRightClick(TitleBar titleBar) {
-                try {
-                    // runNative();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                FileUtils.copy("/storage/emulated/0/Android/data/com.ninelock.editor.photo/files/origin.png",
+                        "/storage/emulated/0/Android/data/com.ninelock.editor.photo/files/origin_1.png");
             }
         });
-
 
         mPenSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -152,13 +150,14 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.doErase) {
-
+            showLoading();
             new Thread(() -> {
                 try {
                     runNative();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                hideLoading();
             }).start();
         } else if (id == R.id.eraseMode) {
             mImgView.setMode(DOODLE);

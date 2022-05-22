@@ -58,7 +58,7 @@ public class IMGView extends FrameLayout implements Runnable,
     private final Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private float doodleWidth = 20f;
+    private float doodleWidth = 15f;
 
     {
         // 涂鸦画刷
