@@ -1,6 +1,7 @@
 package com.ninelock.editor.photo.views.erase;
 
 import static com.ninelock.editor.photo.utils.ImageUtils.getFileExt;
+import static com.ninelock.editor.photo.views.erase.Constant.ERASE_TYPE;
 import static me.minetsh.imaging.core.IMGMode.DOODLE;
 import static me.minetsh.imaging.core.IMGMode.NONE;
 
@@ -51,6 +52,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private IMGView mImgView;
     private SeekBar mPenSize;
 
+    private String type = ERASE_TYPE;
     private int step;
     private String projectDir;
     private String projectCurrentFilepath;
@@ -101,6 +103,9 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         // 画笔宽度
         mPenSize = findViewById(R.id.penSize);
         mPenSize.setProgress(15);
+
+        // 默认选中
+        this.type = ERASE_TYPE;
     }
 
     private void initEvent() {

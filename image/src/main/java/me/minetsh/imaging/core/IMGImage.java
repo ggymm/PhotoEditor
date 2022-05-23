@@ -71,7 +71,7 @@ public class IMGImage {
     /**
      * 编辑模式
      */
-    private IMGMode mMode = IMGMode.NONE;
+    private IMGMode mMode = IMGMode.DOODLE;
 
     private boolean isFreezing = false;
 
@@ -544,14 +544,14 @@ public class IMGImage {
         canvas.restoreToCount(layerCount);
     }
 
-    public void onDrawDoodles(Canvas canvas, float doodleWidth) {
+    public void onDrawDoodles(Canvas canvas) {
         if (!isDoodleEmpty()) {
             canvas.save();
             float scale = getScale();
             canvas.translate(mFrame.left, mFrame.top);
             canvas.scale(scale, scale);
             for (IMGPath path : mDoodles) {
-                path.onDrawDoodle(canvas, mPaint, doodleWidth);
+                path.onDrawDoodle(canvas, mPaint);
             }
             canvas.restore();
         }

@@ -61,6 +61,8 @@ public class IMGView extends FrameLayout implements Runnable,
     private float doodleWidth = 15f;
 
     {
+        mPen.setWidth(doodleWidth);
+
         // 涂鸦画刷
         mDoodlePaint.setStyle(Paint.Style.STROKE);
         mDoodlePaint.setStrokeWidth(doodleWidth);
@@ -80,6 +82,7 @@ public class IMGView extends FrameLayout implements Runnable,
 
     public void setDoodleWidth(float doodleWidth) {
         this.doodleWidth = doodleWidth;
+        mPen.setWidth(doodleWidth);
     }
 
     public float getDoodleWidth() {
@@ -228,7 +231,7 @@ public class IMGView extends FrameLayout implements Runnable,
         }
 
         // 涂鸦
-        mImage.onDrawDoodles(canvas, doodleWidth);
+        mImage.onDrawDoodles(canvas);
         if (mImage.getMode() == IMGMode.DOODLE && !mPen.isEmpty()) {
             mDoodlePaint.setColor(mPen.getColor());
             mDoodlePaint.setStrokeWidth(doodleWidth * mImage.getScale());
@@ -359,7 +362,7 @@ public class IMGView extends FrameLayout implements Runnable,
         RectF clipFrame = mImage.getClipFrame();
         canvas.rotate(mImage.getRotate(), clipFrame.centerX(), clipFrame.centerY());
 
-        mImage.onDrawDoodles(canvas, doodleWidth);
+        mImage.onDrawDoodles(canvas);
 
         return bitmap;
     }
