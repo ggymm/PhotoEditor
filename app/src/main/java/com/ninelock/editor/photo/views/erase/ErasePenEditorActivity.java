@@ -170,9 +170,11 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         } else if (id == R.id.eraseMode) {
             type = ERASE_TYPE;
             mImgView.setMode(DOODLE);
+            mImgView.setPenColor(0x80FF0000);
         } else if (id == R.id.restoreMode) {
             type = RESTORE_TYPE;
             mImgView.setMode(DOODLE);
+            mImgView.setPenColor(0x80FFFFFF);
         } else if (id == R.id.moveMode) {
             mImgView.setMode(NONE);
         }
