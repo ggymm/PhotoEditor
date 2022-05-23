@@ -56,6 +56,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
     private int step;
     private String projectDir;
+    private String projectOriginFilepath;
     private String projectCurrentFilepath;
     private String type = ERASE_TYPE;
 
@@ -188,8 +189,9 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
                 projectFolder.mkdirs();
             }
 
-            // 拷贝原图到工程目录
-            projectCurrentFilepath = projectDir + "origin." + getFileExt(mFilename);
+            // 生成原图
+            projectOriginFilepath = projectDir + "origin." + getFileExt(mFilename);
+            projectCurrentFilepath = projectOriginFilepath;
 
             File originFile = new File(projectCurrentFilepath);
             if (originFile.exists()) {
@@ -217,9 +219,11 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         // 调用jni方法
         InpaintingNative inpaintingNative = new InpaintingNative();
         if (ERASE_TYPE.equals(type)) {
+            // 擦除
             inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
         } else if (RESTORE_TYPE.equals(type)) {
-            inpaintingNative.recover(null, null, null, null);
+            // 复原
+            inpaintingNative.recover(projectOriginFilepath, projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
         }
 
         step++;
