@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
-import com.blankj.utilcode.util.FileUtils;
 import com.dlut.iiauapp.InpaintingNative;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
@@ -118,8 +117,6 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
             @Override
             public void onRightClick(TitleBar titleBar) {
-                FileUtils.copy("/storage/emulated/0/Android/data/com.ninelock.editor.photo/files/origin.png",
-                        "/storage/emulated/0/Android/data/com.ninelock.editor.photo/files/origin_1.png");
             }
         });
 
