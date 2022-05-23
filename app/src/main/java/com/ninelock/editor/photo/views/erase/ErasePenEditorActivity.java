@@ -20,6 +20,7 @@ import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
 import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.views.base.BaseActivity;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -127,7 +128,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
             public void onRightClick(TitleBar titleBar) {
                 mImgView.reset();
                 ImageUtils.save2Album(mImgView.saveBitmap(), Bitmap.CompressFormat.PNG);
-                showSuccessTip("保存到系统相册成功");
+                showTip("保存到系统相册成功", QMUITipDialog.Builder.ICON_TYPE_SUCCESS);
             }
         });
 
@@ -158,6 +159,12 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.doErase) {
+            // 校验
+            if (step == 1) {
+                showTip("未进行擦除操作，无法复原", QMUITipDialog.Builder.ICON_TYPE_FAIL);
+                return;
+            }
+
             showLoading();
             new Thread(() -> {
                 try {
@@ -177,6 +184,8 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
             mImgView.setPenColor(0x80FFFFFF);
         } else if (id == R.id.moveMode) {
             mImgView.setMode(NONE);
+        } else if (id == R.id.compare) {
+
         }
     }
 
