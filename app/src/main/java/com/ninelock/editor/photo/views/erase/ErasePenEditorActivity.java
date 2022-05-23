@@ -1,7 +1,8 @@
 package com.ninelock.editor.photo.views.erase;
 
-import static com.ninelock.editor.photo.utils.ImageUtils.getFileExt;
+import static com.ninelock.editor.photo.utils.FileUtils.getFileExt;
 import static com.ninelock.editor.photo.views.erase.Constant.ERASE_TYPE;
+import static com.ninelock.editor.photo.views.erase.Constant.RESTORE_TYPE;
 import static me.minetsh.imaging.core.IMGMode.DOODLE;
 import static me.minetsh.imaging.core.IMGMode.NONE;
 
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
+import com.blankj.utilcode.util.ImageUtils;
 import com.dlut.iiauapp.InpaintingNative;
 import com.hjq.bar.OnTitleBarListener;
 import com.hjq.bar.TitleBar;
@@ -52,10 +54,10 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private IMGView mImgView;
     private SeekBar mPenSize;
 
-    private String type = ERASE_TYPE;
     private int step;
     private String projectDir;
     private String projectCurrentFilepath;
+    private String type = ERASE_TYPE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +104,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
         // 画笔宽度
         mPenSize = findViewById(R.id.penSize);
-        mPenSize.setProgress(15);
+        mPenSize.setProgress(20);
 
         // 默认选中
         this.type = ERASE_TYPE;
@@ -122,6 +124,9 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
             @Override
             public void onRightClick(TitleBar titleBar) {
+                mImgView.reset();
+                ImageUtils.save2Album(mImgView.saveBitmap(), Bitmap.CompressFormat.PNG);
+                showSuccessTip("保存到系统相册成功");
             }
         });
 
@@ -162,6 +167,10 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
                 hideLoading();
             }).start();
         } else if (id == R.id.eraseMode) {
+            type = ERASE_TYPE;
+            mImgView.setMode(DOODLE);
+        } else if (id == R.id.restoreMode) {
+            type = RESTORE_TYPE;
             mImgView.setMode(DOODLE);
         } else if (id == R.id.moveMode) {
             mImgView.setMode(NONE);
@@ -207,7 +216,11 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
         // 调用jni方法
         InpaintingNative inpaintingNative = new InpaintingNative();
-        inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
+        if (ERASE_TYPE.equals(type)) {
+            inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
+        } else if (RESTORE_TYPE.equals(type)) {
+            inpaintingNative.recover(null, null, null, null);
+        }
 
         step++;
         projectCurrentFilepath = resultFile;

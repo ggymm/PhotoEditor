@@ -1,6 +1,6 @@
 package com.ninelock.editor.photo.utils;
 
-public class ImageUtils {
+public class FileUtils {
 
     public static String getFileExt(String filename) {
         if ((filename != null) && (filename.length() > 0)) {

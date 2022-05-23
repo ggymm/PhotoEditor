@@ -52,7 +52,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
-                android:max="30"
+                android:max="50"
                 android:maxHeight="36dp"
                 android:minHeight="36dp"
                 android:progressDrawable="@drawable/doodle_seekbar_background"
@@ -96,7 +96,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:button="@drawable/ic_icons8_re_erase_btn"
-                android:gravity="center" />
+                android:gravity="center"
+                android:onClick="onClick" />
 
             <Space
                 android:layout_width="@dimen/image_mode_space"

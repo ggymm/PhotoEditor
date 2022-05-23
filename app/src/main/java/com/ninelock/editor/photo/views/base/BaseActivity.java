@@ -1,6 +1,7 @@
 package com.ninelock.editor.photo.views.base;
 
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +10,8 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 public class BaseActivity extends AppCompatActivity {
+
+    private final Handler mHandler = new Handler();
 
     private QMUITipDialog mTipDialog;
 
@@ -21,6 +24,15 @@ public class BaseActivity extends AppCompatActivity {
                 .autoDarkModeEnable(true)
                 .fitsSystemWindows(true)
                 .init();
+    }
+
+    protected void showSuccessTip(String text) {
+        mTipDialog = new QMUITipDialog.Builder(this)
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_SUCCESS)
+                .setTipWord(text)
+                .create(true);
+        mTipDialog.show();
+        mHandler.postDelayed(() -> mTipDialog.dismiss(), 2000);
     }
 
     protected void showLoading() {

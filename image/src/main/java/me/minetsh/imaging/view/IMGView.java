@@ -62,6 +62,7 @@ public class IMGView extends FrameLayout implements Runnable,
 
     {
         mPen.setWidth(doodleWidth);
+        mPen.setColor(0x80FF0000);
 
         // 涂鸦画刷
         mDoodlePaint.setStyle(Paint.Style.STROKE);
