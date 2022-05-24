@@ -160,7 +160,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         int id = v.getId();
         if (id == R.id.doErase) {
             // 校验
-            if (step == 1) {
+            if (step == 1 && RESTORE_TYPE.equals(type)) {
                 showTip("未进行擦除操作，无法复原", QMUITipDialog.Builder.ICON_TYPE_FAIL);
                 return;
             }
@@ -175,13 +175,21 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
                 hideLoading();
             }).start();
         } else if (id == R.id.eraseMode) {
+            // 设置类型
             type = ERASE_TYPE;
+
+            // 设置画板状态
+            mImgView.clearDoodles();
             mImgView.setMode(DOODLE);
             mImgView.setPenColor(0x80FF0000);
         } else if (id == R.id.restoreMode) {
+            // 设置类型
             type = RESTORE_TYPE;
+
+            // 设置画板状态
+            mImgView.clearDoodles();
             mImgView.setMode(DOODLE);
-            mImgView.setPenColor(0x80FFFFFF);
+            mImgView.setPenColor(0x80FF0000);
         } else if (id == R.id.moveMode) {
             mImgView.setMode(NONE);
         } else if (id == R.id.compare) {

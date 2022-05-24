@@ -109,8 +109,18 @@ public class IMGView extends FrameLayout implements Runnable,
         mSGDetector = new ScaleGestureDetector(context, this);
     }
 
-    public void reset() {
+    public void clearDoodles() {
         mImage.clearDoodles();
+        invalidate();
+    }
+
+    public void reset() {
+        // 清除轨迹
+        mImage.clearDoodles();
+
+        // 重设图片位置偏移
+        onHoming();
+
         invalidate();
     }
 
