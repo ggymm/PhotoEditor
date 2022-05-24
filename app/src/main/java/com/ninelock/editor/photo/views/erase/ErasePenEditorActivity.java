@@ -14,10 +14,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
 
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+
 import com.blankj.utilcode.util.ImageUtils;
 import com.dlut.iiauapp.InpaintingNative;
-import com.hjq.bar.OnTitleBarListener;
-import com.hjq.bar.TitleBar;
 import com.ninelock.editor.photo.R;
 import com.ninelock.editor.photo.views.base.BaseActivity;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
@@ -50,7 +51,9 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private String mFilepath;
     private String mFilename;
 
-    private TitleBar mTitleBar;
+    private AppCompatImageView back;
+    private AppCompatImageView refresh;
+    private AppCompatTextView finish;
 
     private IMGView mImgView;
     private SeekBar mPenSize;
@@ -95,7 +98,9 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
     private void initView() {
         // 标题栏
-        mTitleBar = findViewById(R.id.titleBar);
+        back = findViewById(R.id.back);
+        refresh = findViewById(R.id.refresh);
+        finish = findViewById(R.id.finish);
 
         // 图像
         mImgView = findViewById(R.id.imgView);
@@ -113,23 +118,20 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     }
 
     private void initEvent() {
-        mTitleBar.setOnTitleBarListener(new OnTitleBarListener() {
+        back.setOnClickListener(v -> {
+            finish();
+        });
 
-            @Override
-            public void onLeftClick(TitleBar titleBar) {
-                finish();
-            }
+        // 重新初始化
+        refresh.setOnClickListener(v -> {
 
-            @Override
-            public void onTitleClick(TitleBar titleBar) {
-            }
+        });
 
-            @Override
-            public void onRightClick(TitleBar titleBar) {
-                mImgView.reset();
-                ImageUtils.save2Album(mImgView.saveBitmap(), Bitmap.CompressFormat.PNG);
-                showTip("保存到系统相册成功", QMUITipDialog.Builder.ICON_TYPE_SUCCESS);
-            }
+        // 完成
+        finish.setOnClickListener(v -> {
+            mImgView.reset();
+            ImageUtils.save2Album(mImgView.saveBitmap(), Bitmap.CompressFormat.PNG);
+            showTip("保存到系统相册成功", QMUITipDialog.Builder.ICON_TYPE_SUCCESS);
         });
 
         mPenSize.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
