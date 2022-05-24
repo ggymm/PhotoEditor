@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="12dp"
+                android:layout_marginEnd="20dp"
                 android:layout_toStartOf="@+id/finish"
                 android:src="@drawable/icons8_refresh" />
 

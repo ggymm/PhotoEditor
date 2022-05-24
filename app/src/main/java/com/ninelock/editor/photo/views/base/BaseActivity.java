@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.ninelock.editor.photo.R;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
+import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 public class BaseActivity extends AppCompatActivity {
@@ -24,6 +26,16 @@ public class BaseActivity extends AppCompatActivity {
                 .autoDarkModeEnable(true)
                 .fitsSystemWindows(true)
                 .init();
+    }
+
+    protected void showAsk(String title, String message, QMUIDialogAction.ActionListener listener) {
+        new QMUIDialog.MessageDialogBuilder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .addAction("取消", (dialog, index) -> dialog.dismiss())
+                .addAction("确定", listener)
+                .show();
+
     }
 
     protected void showTip(String text, int type) {

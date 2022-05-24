@@ -124,7 +124,20 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
         // 重新初始化
         refresh.setOnClickListener(v -> {
+            // 确认
+            showAsk("提示", "是否重新加载图片", (dialog, index) -> {
+                // 重置步数
+                step = 1;
 
+                // 可以直接展示原始图片
+                Bitmap bitmap = getBitmap(mFilepath);
+                if (bitmap != null) {
+                    mImgView.setImageBitmap(bitmap);
+                }
+
+                // 隐藏对话框
+                dialog.dismiss();
+            });
         });
 
         // 完成
@@ -235,26 +248,30 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         stream.close();
 
         // 结果图片地址
-        String resultFile = projectDir + "result_" + step + ".png";
+        String resultFilepath = projectDir + "result_" + step + ".png";
+        File resultFile = new File(resultFilepath);
+        if (resultFile.exists()) {
+            resultFile.delete();
+        }
 
         // 调用jni方法
         InpaintingNative inpaintingNative = new InpaintingNative();
         if (ERASE_TYPE.equals(type)) {
             // 擦除
-            inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
+            inpaintingNative.inpainting(projectCurrentFilepath, maskFile.getAbsolutePath(), resultFilepath);
         } else if (RESTORE_TYPE.equals(type)) {
             // 复原
-            inpaintingNative.recover(projectOriginFilepath, projectCurrentFilepath, maskFile.getAbsolutePath(), resultFile);
+            inpaintingNative.recover(projectOriginFilepath, projectCurrentFilepath, maskFile.getAbsolutePath(), resultFilepath);
         }
 
         step++;
-        projectCurrentFilepath = resultFile;
+        projectCurrentFilepath = resultFilepath;
 
         // 清除轨迹
         mImgView.reset();
 
         // 加载新图片
-        Bitmap bitmap = getBitmap(resultFile);
+        Bitmap bitmap = getBitmap(resultFilepath);
         if (bitmap != null) {
             mImgView.setImageBitmap(bitmap);
         }
