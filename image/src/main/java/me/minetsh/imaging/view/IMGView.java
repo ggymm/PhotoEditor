@@ -119,7 +119,7 @@ public class IMGView extends FrameLayout implements Runnable,
         mImage.clearDoodles();
 
         // 重设图片位置偏移
-        onHoming();
+        // onHoming();
 
         invalidate();
     }
