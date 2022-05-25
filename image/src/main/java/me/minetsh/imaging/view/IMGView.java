@@ -55,6 +55,10 @@ public class IMGView extends FrameLayout implements Runnable,
         return this.mImage.getDoodles();
     }
 
+    public int getDoodlesSize() {
+        return this.mImage.getDoodles().size();
+    }
+
     private final Paint mDoodlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint mMosaicPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 

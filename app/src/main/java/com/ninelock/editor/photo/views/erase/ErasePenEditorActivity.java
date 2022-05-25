@@ -52,6 +52,8 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private String mFilename;
 
     private AppCompatImageView back;
+    private AppCompatImageView undo;
+    private AppCompatImageView redo;
     private AppCompatImageView refresh;
     private AppCompatTextView finish;
 
@@ -99,6 +101,8 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private void initView() {
         // 标题栏
         back = findViewById(R.id.back);
+        undo = findViewById(R.id.undo);
+        redo = findViewById(R.id.redo);
         refresh = findViewById(R.id.refresh);
         finish = findViewById(R.id.finish);
 
@@ -111,16 +115,14 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
         // 画笔宽度
         mPenSize = findViewById(R.id.penSize);
-        mPenSize.setProgress(20);
+        mPenSize.setProgress(40);
 
         // 默认选中
         this.type = ERASE_TYPE;
     }
 
     private void initEvent() {
-        back.setOnClickListener(v -> {
-            finish();
-        });
+        back.setOnClickListener(v -> finish());
 
         // 重新初始化
         refresh.setOnClickListener(v -> {
@@ -174,6 +176,11 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.doErase) {
+            int doodlesSize = mImgView.getDoodlesSize();
+            if (doodlesSize == 0) {
+                return;
+            }
+
             // 校验
             if (step == 1 && RESTORE_TYPE.equals(type)) {
                 showTip("未进行擦除操作，无法复原", QMUITipDialog.Builder.ICON_TYPE_FAIL);

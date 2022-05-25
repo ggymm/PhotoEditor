@@ -33,12 +33,23 @@
                 android:layout_marginStart="24dp"
                 android:src="@drawable/arrows_left_black" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/undo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="@string/erase_pen" />
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_toEndOf="@+id/back"
+                android:src="@drawable/icons8_undo" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/redo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:layout_toEndOf="@+id/undo"
+                android:src="@drawable/icons8_redo" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/refresh"
