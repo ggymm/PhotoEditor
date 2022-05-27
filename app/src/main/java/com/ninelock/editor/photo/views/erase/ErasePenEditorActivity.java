@@ -61,6 +61,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private SeekBar mPenSize;
 
     private int step;
+    private int maxStep;
     private String projectDir;
     private String projectOriginFilepath;
     private String projectCurrentFilepath;
@@ -106,6 +107,9 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         refresh = findViewById(R.id.refresh);
         finish = findViewById(R.id.finish);
 
+        undo.setVisibility(View.INVISIBLE);
+        redo.setVisibility(View.INVISIBLE);
+
         // 图像
         mImgView = findViewById(R.id.imgView);
         Bitmap bitmap = getBitmap(mFilepath);
@@ -124,12 +128,41 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private void initEvent() {
         back.setOnClickListener(v -> finish());
 
+        undo.setOnClickListener(v -> {
+            // 回退
+            step -= 1;
+            String filepath = projectDir + "result_" + step + ".png";
+            Bitmap bitmap = getBitmap(filepath);
+            if (bitmap != null) {
+                mImgView.setImageBitmap(bitmap);
+            }
+
+            redo.setVisibility(View.VISIBLE);
+            if (step == 1) {
+                undo.setVisibility(View.INVISIBLE);
+            }
+        });
+        redo.setOnClickListener(v -> {
+            // 前进
+            step += 1;
+            if (step < maxStep) {
+                // 回退
+                String filepath = projectDir + "result_" + step + ".png";
+                Bitmap bitmap = getBitmap(filepath);
+                if (bitmap != null) {
+                    mImgView.setImageBitmap(bitmap);
+                }
+            } else {
+                redo.setVisibility(View.INVISIBLE);
+            }
+        });
         // 重新初始化
         refresh.setOnClickListener(v -> {
             // 确认
             showAsk("提示", "是否重新加载图片", (dialog, index) -> {
                 // 重置步数
                 step = 1;
+                maxStep = 1;
 
                 // 可以直接展示原始图片
                 Bitmap bitmap = getBitmap(mFilepath);
@@ -272,15 +305,21 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         }
 
         step++;
+        maxStep = step;
         projectCurrentFilepath = resultFilepath;
 
-        // 清除轨迹
-        mImgView.reset();
+        runOnUiThread(() -> {
+            // 清除轨迹
+            mImgView.reset();
 
-        // 加载新图片
-        Bitmap bitmap = getBitmap(resultFilepath);
-        if (bitmap != null) {
-            mImgView.setImageBitmap(bitmap);
-        }
+            // 显示回退按钮
+            undo.setVisibility(View.VISIBLE);
+
+            // 加载新图片
+            Bitmap bitmap = getBitmap(resultFilepath);
+            if (bitmap != null) {
+                mImgView.setImageBitmap(bitmap);
+            }
+        });
     }
 }
