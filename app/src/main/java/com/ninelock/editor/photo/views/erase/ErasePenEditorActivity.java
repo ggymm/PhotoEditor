@@ -67,6 +67,8 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
     private String projectCurrentFilepath;
     private String type = ERASE_TYPE;
 
+    private boolean showOrigin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
 
         step = 0;
         projectDir = null;
+        showOrigin = false;
 
         initView();
         initEvent();
@@ -122,7 +125,7 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         mPenSize.setProgress(40);
 
         // 默认选中
-        this.type = ERASE_TYPE;
+        type = ERASE_TYPE;
     }
 
     private void initEvent() {
@@ -262,7 +265,25 @@ public class ErasePenEditorActivity extends BaseActivity implements View.OnClick
         } else if (id == R.id.moveMode) {
             mImgView.setMode(NONE);
         } else if (id == R.id.compare) {
+            if (!showOrigin) {
+                showOrigin = true;
+                mImgView.setMode(NONE);
 
+                // 显示原图
+                // 可以直接展示原始图片
+                Bitmap bitmap = getBitmap(mFilepath);
+                if (bitmap != null) {
+                    mImgView.setImageBitmap(bitmap);
+                }
+            } else {
+                showOrigin = false;
+
+                // 显示当前图片
+                Bitmap bitmap = getBitmap(projectCurrentFilepath);
+                if (bitmap != null) {
+                    mImgView.setImageBitmap(bitmap);
+                }
+            }
         }
     }
 
